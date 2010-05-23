@@ -1,5 +1,5 @@
 <?php
-class requestarray extends classarray {
+class requestarray extends structure {
 private $request;
 	public function __construct(&$var)
 		{

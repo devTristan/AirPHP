@@ -8,9 +8,9 @@ class db_mysql extends driver {
 		{
 		return mysql_pconnect($config['server'],$config['username'],$config['password']);
 		}
-	public function set_database($database)
+	public function set_database($link,$database)
 		{
-		return mysql_select_db($database,$this->connection());
+		return mysql_select_db($database,$link);
 		}
 	public function query($link,$sql)
 		{

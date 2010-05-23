@@ -1,9 +1,7 @@
 <html>
 <head>
 <title>PHP Error</title>
-<style type="text/css">
-<?php s('views')->include_view('airphp_style'); ?>
-</style>
+<link type="text/css" rel="stylesheet" href="<?php echo URL_BASE; ?>airphp.css" /> 
 </head>
 <body>
 <h1>A PHP Error was encountered</h1>

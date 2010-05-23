@@ -7,7 +7,12 @@ $config = array(
 'language' => 'english',
 'charset' => 'UTF-8',
 
-'host' => false,
+'host' => array(
+	'domain' => 'localhost',
+	'port' => 80,
+	'protocol' => 'http',
+	'basedir' => 'AirPHP/'
+	),
 
 'permitted_uri_chars' => 'a-z 0-9~%.:_\-',
 'url_suffix' => '',
@@ -18,18 +23,13 @@ $config = array(
 	'path' => '/'
 	),
 
-'routes' => s('config','routes'),
-
-'mimes' => s('config','mimes'),
-'error' => s('config','error'),
-
 'autoload_folders' => array(),
 
 'classtypes' => array(
 	'codeigniter' => array(
 		'prefix' => 'CI_',
 		'is_compatibility' => true,
-		'required[]' => 'CI',
+		'required' => array('CI'),
 		'autoload_folders' => array('libraries')
 		),
 	'controller' => array(
@@ -44,8 +44,6 @@ $config = array(
 
 'codeigniter' => array(
 	'time_reference' => 'local'
-	),
-
-'db' => s('config','db')
+	)
 
 );

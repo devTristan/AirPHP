@@ -17,7 +17,7 @@ private $config;
 			{
 			$method = (($this->config['persistent']) ? 'p' : '').'connect';
 			$this->connection = $this->worker()->$method($this->config);
-			$this->worker()->set_database($this->config['database']);
+			$this->worker()->set_database($this->connection(),$this->config['database']);
 			}
 		return $this->connection;
 		}

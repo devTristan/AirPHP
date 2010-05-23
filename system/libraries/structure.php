@@ -1,5 +1,5 @@
 <?php
-abstract class classarray extends library implements Iterator, Countable, ArrayAccess {
+abstract class structure extends library implements Iterator, Countable, ArrayAccess {
 private $_array;
 	protected function set_array(&$array)
 		{
@@ -44,5 +44,5 @@ private $_array;
 	public function offsetUnset($offset)
 		{
 		unset($this->_array[$offset]);
-		}	
+		}
 }

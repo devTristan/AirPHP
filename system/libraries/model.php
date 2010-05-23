@@ -14,7 +14,7 @@ abstract class model extends base {
 
 		}
 }
-abstract class model_row extends classarray {
+abstract class model_row extends structure {
 protected $commit = false;
 private $insert = true;
 private $data = array();

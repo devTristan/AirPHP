@@ -1,5 +1,5 @@
 <?php
-class config extends classarray {
+class config extends structure {
 private $functions = array();
 public $conf = array();
 private $setup = false;
@@ -20,18 +20,48 @@ private $setup = false;
 	public function __get($var)
 		{
 		$this->setup();
-		return isset($this->conf[$var]) ? ((is_object($this->conf[$var]) && get_class($this->conf[$var]) == 'config') ? $this->conf[$var]->setup()->conf : $this->conf[$var]) : array();
+		if (isset($this->conf[$var]))
+			{
+			return $this->conf[$var];
+			}
+		else
+			{
+			if (file_exists(DIR_CONFIG.$var.'.php'))
+				{
+				return s('config',$var);
+				}
+			else
+				{
+				return array();
+				}
+			}
 		}
 	public function __isset($var)
 		{
 		$this->setup();
-		return isset($this->conf[$var]);
+		if (isset($this->conf[$var]))
+			{
+			return true;
+			}
+		else
+			{
+			return file_exists(DIR_CONFIG.$var.'.php');
+			}
 		}
-	public function __unset($var)
+	public function __unset($var){}
+	public function offsetExists($offset)
 		{
-		$this->setup();
-		unset($this->conf[$var]);
+		return $this->__isset($offset);
 		}
+	public function offsetGet($offset)
+		{
+		return $this->__get($offset);
+		}
+	public function offsetSet($offset,$value)
+		{
+		$this->__set($offset,$value);
+		}
+	public function offsetUnset($offset){}
 	public function __toString()
 		{
 		$this->setup();

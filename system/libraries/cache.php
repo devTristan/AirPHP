@@ -1,5 +1,5 @@
 <?php
-class cache extends library {
+class cache extends library implements ArrayAccess {
 private $drivers = array();
 private $prefix;
 	public function __construct($dummy1,$dummy2)
@@ -67,11 +67,34 @@ private $prefix;
 			$this->driver($driver)->remove($item);
 			}
 		}
-	public function clear()
+	public function offsetExists($offset)
 		{
-		foreach ($this->drivers as $driver)
+		return $this->__isset($offset);
+		}
+	public function offsetGet($offset)
+		{
+		return $this->__get($offset);
+		}
+	public function offsetSet($offset,$value)
+		{
+		$this->__set($offset,$value);
+		}
+	public function offsetUnset($offset)
+		{
+		$this->__unset($offset);
+		}
+	public function clear($type = null)
+		{
+		if ($type === null)
 			{
-			$this->driver($driver)->clear();
+			foreach ($this->drivers as $driver)
+				{
+				$this->driver($driver)->clear();
+				}
+			}
+		else
+			{
+			$this->driver($type)->clear();
 			}
 		}
 }

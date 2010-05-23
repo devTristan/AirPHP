@@ -1,5 +1,5 @@
 <?php
-class requestfiles extends classarray {
+class requestfiles extends structure {
 private $files = array();
 	public function __construct()
 		{
