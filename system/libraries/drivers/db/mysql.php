@@ -2,11 +2,11 @@
 class db_mysql extends driver {
 	public function connect($config)
 		{
-		return mysql_connect($config['server'],$config['username'],['password']);
+		return mysql_connect($config['server'],$config['username'],$config['password']);
 		}
 	public function pconnect($config)
 		{
-		return mysql_pconnect($config['server'],$config['username'],['password']);
+		return mysql_pconnect($config['server'],$config['username'],$config['password']);
 		}
 	public function set_database($database)
 		{
