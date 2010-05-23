@@ -54,7 +54,7 @@ class controller_test extends controller {
 		{
 		s('views')->show_view('errors/general',array(
 			'heading' => $title,
-			'message' => '<a href="./">&laquo; Back to tests</a> | <a href="'.URL_BASE.URL.'">Re-run</a><br/><br/>'.$message
+			'message' => '<a href="./">&laquo; Back to tests</a> | <a href="'.URL_BASE.URL.'">Re-run</a><br/>'.$message
 			));
 		}
 }
