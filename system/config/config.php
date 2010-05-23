@@ -7,12 +7,7 @@ $config = array(
 'language' => 'english',
 'charset' => 'UTF-8',
 
-'host' => array(
-	'domain' => 'localhost',
-	'port' => 80,
-	'protocol' => 'http',
-	'basedir' => 'AirPHP/'
-	),
+'host' => false,
 
 'permitted_uri_chars' => 'a-z 0-9~%.:_\-',
 'url_suffix' => '',

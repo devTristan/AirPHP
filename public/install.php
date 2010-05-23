@@ -50,7 +50,7 @@ if (isset($_POST['username']) && isset($_POST['password']))
 		$basedir = substr($_SERVER['REQUEST_URI'],1,-11);
 		$config = file_get_contents('../system/config/config.php');
 		$config = str_replace(
-			"'host' => array(\n\t'domain' => 'localhost',\n\t'port' => 80,\n\t'protocol' => 'http',\n\t'basedir' => 'AirPHP/'\n\t),",
+			"'host' => false,",
 			"'host' => array(\n\t'domain' => '$domain',\n\t'port' => $port,\n\t'protocol' => '$protocol',\n\t'basedir' => '$basedir'\n\t),"
 			,$config);
 		file_put_contents('../system/config/config.php',$config);

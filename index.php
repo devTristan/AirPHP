@@ -9,6 +9,7 @@ require_once 'system/core/abstracts.php';
 require_once 'system/core/airphp.php';
 s('airphp');
 s('config');
+if (s('config')->host === false) {echo 'AirPHP hasn\'t yet been installed. You had better go to install.php'; die();}
 $overhead_end = microtime(true);
 s('timing')->play('total')->set('total',$overhead_end-$overhead_start);
 s('timing')->pause('overhead')->set('overhead',$overhead_end-$overhead_start);
