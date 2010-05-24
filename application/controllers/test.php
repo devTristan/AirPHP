@@ -5,7 +5,8 @@ class controller_test extends controller {
 		s('views')->show_view('test/index',array('pages' => array(
 			array('name' => 'DB Test', 'url' => URL_BASE.'test/db'),
 			array('name' => 'Cache Test', 'url' => URL_BASE.'test/cache'),
-			array('name' => 'Config Test', 'url' => URL_BASE.'test/config')
+			array('name' => 'Config Test', 'url' => URL_BASE.'test/config'),
+			array('name' => 'Email Test', 'url' => URL_BASE.'test/email')
 			)));
 		}
 	public function db()
@@ -49,6 +50,15 @@ class controller_test extends controller {
 		$msg[] = 'Checked to see if cache->cake is set: '.((isset($cache->cake)) ? 'true' : 'false');
 		$msg = implode('<br/>',$msg);
 		$this->msg('Cache Test',$msg);
+		}
+	public function email()
+		{
+		s('CI_Email')->from('cake@magistream.com', 'George');
+		s('CI_Email')->to('luck.lil.leprechaun@gmail.com');
+		s('CI_Email')->subject('Email Test');
+		s('CI_Email')->message('Testing the email class.');
+		s('CI_Email')->send();
+		$this->msg('Email Test', s('CI_Email')->print_debugger());
 		}
 	private function msg($title,$message)
 		{
