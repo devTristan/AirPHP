@@ -45,6 +45,21 @@ private $_driver_cache = array();
 			}
 		}
 }
-
+class models extends base {
+private $loaded = array();
+	public function __get($model)
+		{
+		if (isset($this->loaded[$model])) {return $this->loaded[$model];}
+		airphp_autoload('model');
+		$fields = $index = $defaults = array();
+		include(DIR_MODELS.$model.'.php');
+		$instance = s('model_'.$model);
+		$this->loaded[$model] = $instance;
+		$instance->fields = $fields;
+		$instance->index = $index;
+		$instance->defaults = $defaults;
+		return $instance;
+		}
+}
 abstract class driver extends library {
 }
