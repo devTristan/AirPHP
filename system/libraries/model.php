@@ -3,6 +3,7 @@ abstract class model extends base {
 public $fields = array();
 public $index = array();
 public $defaults = array();
+public $engine = '';
 private $name;
 	public function name()
 		{
@@ -59,7 +60,7 @@ private $name;
 		$dbname = 'airphp';
 		$sql =	'CREATE TABLE `'.$dbname.'`.`'.$this->tablename()."` (\n".$this->createrow('id','mediumint',8)." AUTO_INCREMENT PRIMARY KEY,\n";
 		$sql .= implode(",\n", $rows);
-		$sql .= "\n) ENGINE = MYISAM;";
+		$sql .= "\n) ENGINE = ".$this->engine.';';
 		return $sql;
 		}
 	private function createrow($name, $type, $length = false, $null = false, $unsigned = false)
