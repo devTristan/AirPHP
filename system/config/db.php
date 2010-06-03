@@ -11,5 +11,6 @@ $config = array(
 'debug' => true,
 'charset' => 'utf8',
 'collat' => 'utf8_general_ci',
-'table_prefix' => ''
+'table_prefix' => '',
+'default_engine' => 'MYISAM'
 );
