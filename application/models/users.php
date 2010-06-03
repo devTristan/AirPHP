@@ -11,7 +11,9 @@ $index = array(
 	index::index('join_date'),
 	index::index('last_visit')
 	);
-$defaults = array();
+$defaults = array(
+	'name' => 'unnamed'
+	);
 
 class model_users extends model {
 	public function validate_username($username)
