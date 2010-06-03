@@ -53,4 +53,3 @@ else
 		s('output')->end();
 		}
 	}
-die();
