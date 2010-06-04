@@ -33,9 +33,6 @@ private $name;
 		}
 	public function create()
 		{
-		var_dump(s('db')->escape(array(
-			true,false,null,'cake','CA\'K"E',array(1,2,3,'se"cks')
-			)));
 		$rows = array();
 		foreach ($this->fields as $fieldname => $type)
 			{
