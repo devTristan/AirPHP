@@ -37,9 +37,17 @@ private $config;
 		{
 		return $this->worker()->status($this->connection());
 		}
-	public function escape($string)
+	public function escape($value)
 		{
-		return $this->worker()->escape($this->connection(),$string);
+		if (is_array($value))
+			{
+			foreach ($value as &$subvalue)
+				{
+				$subvalue = $this->escape($subvalue);
+				}
+			return $value;
+			}
+		return $this->worker()->escape($this->connection(),$value);
 		}
 	public function affected_rows()
 		{
@@ -61,17 +69,9 @@ private $config;
 		{
 		return $this->fetch_assoc($result);
 		}
-	public function fetch_assoc($result)
+	public function __call($method,$args)
 		{
-		return $this->worker()->fetch_assoc($result);
-		}
-	public function fetch_enum($result)
-		{
-		return $this->worker()->fetch_enum($result);
-		}
-	public function free_result($result)
-		{
-		return $this->worker()->free_result($result);
+		return call_user_func_array(array($this->worker(),$method),$args);
 		}
 	public function __destruct()
 		{
