@@ -40,4 +40,12 @@ const spacing = " \t\n";
 			}
 		return $newstr;
 		}
+	static public function beginswith($str,$begins)
+		{
+		return (substr($str,0,strlen($begins)) == $begins);
+		}
+	static public function endswith($str,$ends)
+		{
+		return (substr($str,-strlen($ends)) == $ends);
+		}
 }
