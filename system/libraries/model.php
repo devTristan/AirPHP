@@ -4,6 +4,7 @@ public $fields = array();
 public $index = array();
 public $defaults = array();
 public $engine = '';
+public $database = 'airphp';
 private $name;
 	public function name()
 		{
@@ -15,19 +16,26 @@ private $name;
 		}
 	public function tablename()
 		{
-		return ''.$this->name();
+		return s('config')->db->table_prefix.$this->name();
+		}
+	public function tablestr()
+		{
+		return '`'.$this->database.'`.`'.$this->tablename().'`';
 		}
 	final public function __call($method,$args)
 		{
-		//switch (str::beginswith($method,'validate_'))
-		//	{
-		//	case 'validate_': return array();
-		//	case 'html_': return htmlspecialchars($args[0]);
-		//	case /* KEEP GOING HERE */
-		//	}
+		if (str::beginswith($method,'get_one_by_'))
+			{
+			$args = n('arr',$args)->addkeys(array('value'))->set('field',substr($method,strlen('get_one_by_')));
+			$sql = 'SELECT * FROM '.$this->tablestr().' WHERE `'.$args['field'].'`='.$args['value'].' LIMIT 1';
+			echo $sql;
+			}
 		}
 	public function create()
 		{
+		var_dump(s('db')->escape(array(
+			true,false,null,'cake','CA\'K"E',array(1,2,3,'se"cks')
+			)));
 		$rows = array();
 		foreach ($this->fields as $fieldname => $type)
 			{
@@ -58,7 +66,7 @@ private $name;
 				}
 			}
 		$dbname = 'airphp';
-		$sql =	'CREATE TABLE `'.$dbname.'`.`'.$this->tablename()."` (\n".$this->createrow('id','mediumint',8)." AUTO_INCREMENT PRIMARY KEY,\n";
+		$sql =	'CREATE TABLE '.$this->tablestr()." (\n".$this->createrow('id','mediumint',8)." AUTO_INCREMENT PRIMARY KEY,\n";
 		$sql .= implode(",\n", $rows);
 		$sql .= "\n) ENGINE = ".$this->engine.';';
 		return $sql;
@@ -156,10 +164,6 @@ private $previous_state = array();
 		{
 		return isset($this->data[$field]);
 		}
-	/*final public function __unset($field)
-		{
-		return unset($this->data[$field]);
-		}*/
 	final public function commit()
 		{
 		if ($this->data === $this->previous_state) {return true;}

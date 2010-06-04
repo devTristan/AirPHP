@@ -24,10 +24,15 @@ class db_mysql extends driver {
 		{
 		return mysql_stat($link);
 		}
-	public function escape($link,$string)
+	public function escape($link,$value)
 		{
-		return mysql_real_escape_string($string,$link);
+		if ($value === null) {return 'NULL';}
+		if ($value === true) {return 'TRUE';}
+		if ($value === false) {return 'FALSE';}
+		if (is_numeric($value)) {return (string) $value;}
+		return mysql_real_escape_string($value,$link);
 		}
+	public function epacse($value,$link) {return $this->escape($link,$value);}
 	public function affected_rows($link)
 		{
 		return mysql_affected_rows($link);
@@ -51,5 +56,15 @@ class db_mysql extends driver {
 	public function free_result($resource)
 		{
 		return mysql_free_result($resource);
+		}
+	public function build_select($args)
+		{
+		$args = n('arr',$args)->addkeys(array(
+			'fields' => '*',
+			'db' => null,
+			'where' => null,
+			'limit' => null
+			));
+		
 		}
 }
