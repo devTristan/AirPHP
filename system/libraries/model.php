@@ -4,7 +4,7 @@ public $fields = array();
 public $index = array();
 public $defaults = array();
 public $engine = '';
-public $database = 'airphp';
+public $database = null;
 private $name;
 	public function name()
 		{
@@ -33,7 +33,7 @@ private $name;
 		}
 	public function create()
 		{
-		$rows = array();
+		$data = array();
 		foreach ($this->fields as $fieldname => $type)
 			{
 			if (!class_exists('field_'.$type[0],false))
@@ -41,33 +41,24 @@ private $name;
 				require_once(DIR_DRIVERS.'model/fields/'.$type[0].'.php');
 				}
 			$field = s('field_'.$type[0]);
-			$rows[] = $this->createrow(
-				$fieldname,
-				$field->type($type[0],$type[1]),
-				$field->length($type[1]),
-				$field->isnull($type[1]),
-				$field->unsigned($type[1])
+			$data['rows'][] = array(
+				'name' => $fieldname,
+				'type' => $field->type($type[0],$type[1]),
+				'length' => $field->length($type[1]),
+				'null' => $field->isnull($type[1]),
+				'unsigned' => $field->unsigned($type[1])
 				);
 			}
 		foreach ($this->index as $type)
 			{
-			if (!class_exists('index_'.$type[0],false))
-				{
-				require_once(DIR_DRIVERS.'model/index/'.$type[0].'.php');
-				}
-			$index = s('index_'.$type[0]);
-			$sql = $index->sql($type[1]);
-			if ($sql)
-				{
-				$rows[] = $sql;
-				}
+			$data['index'][] = $type;
 			}
-		$dbname = 'airphp';
-		$sql =	'CREATE TABLE '.$this->tablestr()." (\n".$this->createrow('id','mediumint',8)." AUTO_INCREMENT PRIMARY KEY,\n";
-		$sql .= implode(",\n", $rows);
-		$sql .= "\n) ENGINE = ".$this->engine.';';
+		$data['db'] = $this->database;
+		$data['table'] = $this->tablename();
+		$sql = s('db')->build_create($data);
 		return $sql;
 		}
+	public function select()
 	private function createrow($name, $type, $length = false, $null = false, $unsigned = false)
 		{
 		return '`'.$name.'` '.strtoupper($type).
@@ -109,25 +100,6 @@ abstract class basefield extends base {
 	public function get($val)
 		{
 		return $val;
-		}
-}
-abstract class baseindex extends base {}
-class index_unique extends baseindex {
-	public function sql($args)
-		{
-		return 'UNIQUE KEY `'.implode(',',$args).'` (`'.implode('`, `',$args).'`)';
-		}
-}
-class index_index extends baseindex {
-	public function sql($args)
-		{
-		return 'KEY `'.implode(',',$args).'` (`'.implode('`, `',$args).'`)';
-		}
-}
-class index_fulltext extends baseindex {
-	public function sql($args)
-		{
-		return 'FULLTEXT (`'.implode('`, `',$args).'`)';
 		}
 }
 abstract class model_row extends structure {
