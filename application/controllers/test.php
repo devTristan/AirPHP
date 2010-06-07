@@ -63,39 +63,19 @@ class controller_test extends controller {
 		}
 	public function model()
 		{
-		$out = '<pre>'.s('models')->users->create().'</pre>';
-		$out .= '<pre>'.s('db')->build_select(array(
-			'fields' => array('t1.cake','pie','`t2`.`chicken`'),
-			'db' => 'mydatabase',
-			'table' => array('t1','t2'),
-			'where' => array(
-				'cake' => 'pie',
-				'OR',
-				'id' => 4,
-				'OR',
-				array(
-					'cake' => 'chicken',
-					'id' => 37.5,
-					'nuggets' => false,
-					array(
-						'pie' => 7,
-						'or',
-						'snuggle' => 'puff'
-						)
-					)
-				),
-			'group' => 'groupbyfield',
-			'order' => array('id','cake'),
-			'limit' => array(10,50)
-			)).'</pre>';
-		$out .= '<pre>'.s('db')->build_update(array(
-			'db' => 'airphp',
-			'table' => 'table1',
-			'set' => array('cake' => null,'pie' => 4),
-			'where' => array('cake' => 'happy muffins'),
-			'limit' => 1
-			)).'</pre>';
-		$this->msg('Model Test',$out.number_format(s('timing')->elapsed('total'),4));
+		$out = '<pre>'.$this->models->users->create().'</pre>';
+		$user = $this->models->users->get_one_by_id(1);
+		$out .= '<pre>'.$user->print_r(true).'</pre>';
+		$user['join_date'] += 1;
+		$user['last_visit'] += 1;
+		$user->commit();
+		$out .= '<table><thead><th>Time</th><th>SQL</th></thead><tbody>';
+		foreach (s('db')->querylist as $query)
+			{
+			$out .= '<tr><td>'.number_format($query[0],5).'</td><td><pre>'.$query[1].'</pre></td></tr>';
+			}
+		$out .= '</tbody></table>';
+		$this->msg('Model Test',$out);
 		}
 	public function loremipsum()
 		{

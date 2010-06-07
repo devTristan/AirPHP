@@ -2,6 +2,7 @@
 class db extends library {
 private $connection;
 private $config;
+public $querylist = array();
 	public function __construct($config = null)
 		{
 		if ($config == null) {$config = s('config')->db;}
@@ -27,7 +28,25 @@ private $config;
 		}
 	public function query($sql)
 		{
-		return $this->worker()->query($this->connection(),$sql);
+		$connection = $this->connection();
+		$worker = $this->worker();
+		$start = microtime(true);
+		$result = $worker->query($connection,$sql);
+		$end = microtime(true);
+		$span = $end-$start;
+		$this->querylist[] = array($span,$sql);
+		if ($result === false)
+			{
+			$error = $this->worker()->error($this->connection());
+			if ($error['line'] !== null)
+				{
+				$sql = explode("\n",$sql);
+				$sql[$error['line']-1] = str_replace($error['highlight'],'<span class="highlight">'.$error['highlight'].'</span>',$sql[$error['line']-1]);
+				$sql = implode("\n",$sql);
+				}
+			show_error($error['string'].'<h2>SQL Query</h2><pre>'.$sql.'</pre>','db');
+			}
+		return $result;
 		}
 	public function unbuffered_query($sql)
 		{

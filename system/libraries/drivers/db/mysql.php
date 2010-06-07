@@ -56,6 +56,28 @@ class db_mysql extends driver {
 		{
 		return mysql_free_result($resource);
 		}
+	public function error($link)
+		{
+		$error = mysql_error($link);
+		$list = explode(' ',$error);
+		$list = array_reverse($list);
+		if ((int) $list[0] && $list[1] == 'line' && $list[2] == 'at')
+			{
+			$line = (int) $list[0];
+			$parts = array_reverse(explode("'",$error));
+			$highlight = $parts[1];
+			}
+		else
+			{
+			$line = null;
+			$highlight = null;
+			}
+		return array(
+			'string' => $error,
+			'line' => $line,
+			'highlight' => $highlight
+			);
+		}
 	public function build_create($link,$args)
 		{
 		$args = n('arr',$args)->addkeys(array(
@@ -63,10 +85,13 @@ class db_mysql extends driver {
 			'table' => null,
 			'rows' => null,
 			'index' => null,
-			'engine' => s('config')->db->default_engine
+			'engine' => s('config')->db->default_engine,
+			'temporary' => false
 			));
 		$sql = array();
-		$sql[] = 'CREATE TABLE '.(($args['db'] === null) ? '' : $this->escape($link,$args['db'],'`').'.').$this->escape($link,$args['table'],'`').'(';
+		$sql[] = 'CREATE TABLE '.(($args['temporary']) ? 'TEMPORARY ' : '')
+			.(($args['db'] === null) ? '' : $this->escape($link,$args['db'],'`').'.')
+			.$this->escape($link,$args['table'],'`').'(';
 		$lines = array();
 		foreach ($args['rows'] as $row)
 			{
@@ -90,12 +115,16 @@ class db_mysql extends driver {
 			'type' => null,
 			'length' => null,
 			'null' => null,
-			'unsigned' => null
+			'unsigned' => null,
+			'auto_increment' => null
 			));
-		return '`'.$args['name'].'` '.strtoupper($args['type']).
-			'('.(($args['length']) ? $args['length'] : '').') '.
-			(($args['unsigned']) ? 'UNSIGNED ': '').
-			(($args['null']) ? 'NULL' : 'NOT NULL');
+		$sql = array();
+		$sql[] = '`'.$args['name'].'` '.strtoupper($args['type']).'('.(($args['length']) ? $args['length'] : '').')';
+		if ($args['unsigned']) {$sql[] = 'UNSIGNED';}
+		$sql[] = ($args['null']) ? 'NULL' : 'NOT NULL';
+		if ($args['auto_increment']) {$sql[] = 'AUTO_INCREMENT';}
+		$sql = implode(' ',$sql);
+		return $sql;
 		}
 	public function build_index($link,$args)
 		{
@@ -112,16 +141,20 @@ class db_mysql extends driver {
 			'group' => null,
 			'having' => null,
 			'order' => null,
-			'limit' => null
+			'limit' => null,
+			'options' => null
 			));
 		$sql = array();
-		$sql[] = 'SELECT '.$this->build_fields($link,$args['fields']);
+		$firstline = 'SELECT ';
+		if ($args['options']) {$firstline .= implode(' ',array_map($args['options'],'strtoupper')).' ';}
+		$firstline .= $this->build_fields($link,$args['fields']);
+		$sql[] = $firstline;
 		$sql[] = 'FROM '.$this->build_table($link,$args['db'],$args['table']);
-		if ($args['where'] !== null) {$sql[] = 'WHERE '.$this->build_where($link,$args['where']);}
-		if ($args['group'] !== null) {$sql[] = 'GROUP BY '.$this->build_order($link,$args['group']);}
-		if ($args['having'] !== null) {$sql[] = 'HAVING '.$this->build_where($link,$args['having']);}
-		if ($args['order'] !== null) {$sql[] = 'ORDER BY '.$this->build_order($link,$args['order']);}
-		if ($args['limit'] !== null) {$sql[] = 'LIMIT '.$this->build_limit($link,$args['limit']);}
+		if ($args['where']) {$sql[] = 'WHERE '.$this->build_where($link,$args['where']);}
+		if ($args['group']) {$sql[] = 'GROUP BY '.$this->build_order($link,$args['group']);}
+		if ($args['having']) {$sql[] = 'HAVING '.$this->build_where($link,$args['having']);}
+		if ($args['order']) {$sql[] = 'ORDER BY '.$this->build_order($link,$args['order']);}
+		if ($args['limit']) {$sql[] = 'LIMIT '.$this->build_limit($link,$args['limit']);}
 		$sql = implode(" \n",$sql);
 		return $sql;
 		}
@@ -133,10 +166,37 @@ class db_mysql extends driver {
 			'where' => null,
 			'set' => null,
 			'order' => null,
-			'limit' => null
+			'limit' => null,
+			'options' => null
 			));
 		$sql = array();
-		$sql[] = 'UPDATE '.$this->build_table($link,$args['db'],$args['table']);
+		$firstline = 'UPDATE ';
+		if ($args['options']) {$firstline .= implode(' ',array_map($args['options'],'strtoupper')).' ';}
+		$firstline .= $this->build_table($link,$args['db'],$args['table']);
+		$sql[] = $firstline;
+		if ($args['set'] !== null) {$sql[] = 'SET '.$this->build_set($link,$args['set']);}
+		if ($args['where'] !== null) {$sql[] = 'WHERE '.$this->build_where($link,$args['where']);}
+		if ($args['order'] !== null) {$sql[] = 'ORDER BY '.$this->build_order($link,$args['order']);}
+		if ($args['limit'] !== null) {$sql[] = 'LIMIT '.$this->build_updatelimit($link,$args['limit']);}
+		$sql = implode(" \n",$sql);
+		return $sql;
+		}
+	public function build_delete($link,$args)
+		{
+		$args = n('arr',$args)->addkeys(array(
+			'db' => null,
+			'table' => null,
+			'where' => null,
+			'set' => null,
+			'order' => null,
+			'limit' => null,
+			'options' => null
+			));
+		$sql = array();
+		$firstline = 'DELETE ';
+		if ($args['options']) {$firstline .= implode(' ',array_map($args['options'],'strtoupper')).' ';}
+		$firstline .= $this->build_table($link,$args['db'],$args['table']);
+		$sql[] = $firstline;
 		if ($args['set'] !== null) {$sql[] = 'SET '.$this->build_set($link,$args['set']);}
 		if ($args['where'] !== null) {$sql[] = 'WHERE '.$this->build_where($link,$args['where']);}
 		if ($args['order'] !== null) {$sql[] = 'ORDER BY '.$this->build_order($link,$args['order']);}
@@ -172,7 +232,7 @@ class db_mysql extends driver {
 		{
 		if (is_string($fields))
 			{
-			if (strpos($fields,'`') === false && strpos($fields,'(') === false && strpos($fields,')') === false)
+			if ($fields != '*' && strpos($fields,'`') === false && strpos($fields,'(') === false && strpos($fields,')') === false)
 				{
 				$fields = $this->escape($link,$fields,'`');
 				if (strpos($fields,'.') !== false)
@@ -263,6 +323,10 @@ class db_mysql extends driver {
 			}
 		return $limit;
 		}
+	public function build_updatelimit($link,$limit)
+		{
+		return (string) ((int) $limit);
+		}
 	public function build_where($link,$where,$value = null)
 		{
 		if (is_string($where))
@@ -339,6 +403,12 @@ class db_mysql_index_index extends driver {
 	public function sql($args)
 		{
 		return 'KEY `'.implode(',',$args).'` (`'.implode('`, `',$args).'`)';
+		}
+}
+class db_mysql_index_primary extends driver {
+	public function sql($args)
+		{
+		return 'PRIMARY KEY (`'.implode('`, `',$args).'`)';
 		}
 }
 class db_mysql_index_fulltext extends driver {

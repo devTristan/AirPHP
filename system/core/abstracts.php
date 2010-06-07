@@ -52,6 +52,7 @@ private $loaded = array();
 		if (isset($this->loaded[$model])) {return $this->loaded[$model];}
 		airphp_autoload('model');
 		$fields = $index = $defaults = array();
+		$identifier = null;
 		$engine = s('config')->db->default_engine;
 		include(DIR_MODELS.$model.'.php');
 		$instance = s('model_'.$model);
@@ -60,6 +61,7 @@ private $loaded = array();
 		$instance->index = $index;
 		$instance->defaults = $defaults;
 		$instance->engine = $engine;
+		$instance->identifier = $identifier;
 		return $instance;
 		}
 }

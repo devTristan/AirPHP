@@ -24,7 +24,7 @@ function show_error($message = '',$type = 'general')
 			$message = (isset(s('config')->error['error_message'][$type])) ? s('config')->error['error_message'][$type] : 'A fatal error has occured.';
 			}
 		}
-	$view = (file_exists('errors/'.$type)) ? 'errors/'.$type : 'errors/general';
+	$view = (s('views')->view_exists('errors/'.$type)) ? 'errors/'.$type : 'errors/general';
 	if (is_numeric($type))
 		{
 		s('output')->header($type);
