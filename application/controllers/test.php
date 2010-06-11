@@ -12,9 +12,7 @@ class controller_test extends controller {
 		}
 	public function db()
 		{
-		$version = s('db')->fetch_enum(s('db')->query('SELECT VERSION()'));
-		$version = $version[0];
-		$this->msg('DB Test','Version: '.$version.'<br/>'.str_replace('  ','<br/>',s('db')->status()));
+		$this->msg('DB Test',nl2br(s('db')->status()));
 		}
 	public function config()
 		{

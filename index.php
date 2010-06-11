@@ -1,6 +1,17 @@
 <?php
-error_reporting(E_ALL);
 $overhead_start = microtime(true);
+error_reporting(E_ALL);
+//This next bit happily borrowed from phpbb3
+//If we are on PHP >= 6.0.0 we do not need some code
+if (!version_compare(PHP_VERSION, '6.0.0-dev', '>='))
+	{
+	@set_magic_quotes_runtime(0);
+	//If register globals is on, deregister them
+	if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals')) == 'on' || !function_exists('ini_get'))
+		{
+		require_once 'system/core/deregister_globals.php';
+		}
+	}
 define('FRAMEWORK_NAME','AirPHP');
 define('FRAMEWORK_VERSION',0.7);
 require_once 'system/core/autoload.php';

@@ -3,18 +3,27 @@ class config extends structure {
 private $functions = array();
 public $conf = array();
 private $setup = false;
+private $modified = false;
+private $file;
 	public function __construct($file = 'config')
 		{
 		$this->file = $file;
 		$this->set_array($this->conf);
 		if (!defined('CONFIG_LOADED')) {define('CONFIG_LOADED',true);}
 		}
+	public function ___destruct()
+		{
+		if ($this->modified)
+			{
+			$this->save();
+			}
+		}
 	private function setup()
 		{
 		if ($this->setup === true) {return $this;}
 		$this->setup = true;
 		$this->extend('include',array($this,'_include'));
-		$this->load(DIR_CONFIG.$this->file.EXT);
+		$this->load(DIR_CONFIG.$this->file);
 		return $this;
 		}
 	public function __get($var)
@@ -36,6 +45,11 @@ private $setup = false;
 				}
 			}
 		}
+	public function __set($var,$value)
+		{
+		$this->modifed = true;
+		$this->conf[$var] = $value;
+		}
 	public function __isset($var)
 		{
 		$this->setup();
@@ -48,7 +62,11 @@ private $setup = false;
 			return file_exists(DIR_CONFIG.$var.'.php');
 			}
 		}
-	public function __unset($var){}
+	public function __unset($var)
+		{
+		$this->modifed = true;
+		unset($this->conf[$var]);
+		}
 	public function offsetExists($offset)
 		{
 		return $this->__isset($offset);
@@ -61,7 +79,10 @@ private $setup = false;
 		{
 		$this->__set($offset,$value);
 		}
-	public function offsetUnset($offset){}
+	public function offsetUnset($offset)
+		{
+		$this->__unset($offset);
+		}
 	public function __toString()
 		{
 		$this->setup();
@@ -78,9 +99,17 @@ private $setup = false;
 		}
 	public function load($file)
 		{
-		include($file);
+		include($file.'.php');
 		$this->conf = ($this->conf == array()) ? $config : array_merge_recursive($this->conf,$config);
 		return $this;
+		}
+	public function save($file = null)
+		{
+		if (!func_num_args())
+			{
+			$file = $this->file;
+			}
+		$file .= '.php';
 		}
 	public function extend($name,$function)
 		{

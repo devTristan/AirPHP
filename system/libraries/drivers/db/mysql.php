@@ -1,5 +1,6 @@
 <?php
 class db_mysql extends driver {
+public $name = 'MySQL';
 	public function connect($config)
 		{
 		return mysql_connect($config['server'],$config['username'],$config['password']);
@@ -20,9 +21,46 @@ class db_mysql extends driver {
 		{
 		return mysql_unbuffered_query($sql,$link);
 		}
+	public function version($link)
+		{
+		$ver = $this->fetch_enum($this->query($link,'SELECT VERSION()'));
+		$ver = $ver[0];
+		return $ver;
+		}
 	public function status($link)
 		{
-		return mysql_stat($link);
+		$stat = mysql_stat($link);
+		$stat = explode('  ',$stat);
+		$newstat = array();
+		$newstat['Version'] = $this->version($link);
+		foreach ($stat as $line)
+			{
+			list($key,$value) = explode(': ',$line);
+			$newstat[$key] = $value;
+			}
+		$stat = $newstat;
+		$stat['Uptime'] = number::timespan($newstat['Uptime']);
+		foreach ($stat as $key => &$value)
+			{
+			if (is_numeric($value))
+				{
+				$value = number_format($value,3);
+				if (strpos($value,'.') !== false)
+					{
+					while (substr($value,-1) == '0')
+						{
+						$value = substr($value,0,-1);
+						}
+					if (substr($value,-1) == '.')
+						{
+						$value = substr($value,0,-1);
+						}
+					}
+				}
+			$value = $key.': '.$value;
+			}
+		$stat = implode("\n",$stat);
+		return $stat;
 		}
 	public function escape($link,$value,$ifstr = '')
 		{
