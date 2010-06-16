@@ -2,12 +2,17 @@
 class controller_test extends controller {
 	public function index()
 		{
+		s('output')->cache(1);
 		s('views')->show_view('test/index',array('pages' => array(
 			array('name' => 'DB Test', 'url' => URL_BASE.'test/db'),
 			array('name' => 'Cache Test', 'url' => URL_BASE.'test/cache'),
 			array('name' => 'Config Test', 'url' => URL_BASE.'test/config'),
 			array('name' => 'Email Test', 'url' => URL_BASE.'test/email'),
-			array('name' => 'Lorem Ipsum Test', 'url' => URL_BASE.'test/loremipsum')
+			array('name' => 'Lorem Ipsum Test', 'url' => URL_BASE.'test/loremipsum'),
+			array('name' => 'Model Test', 'url' => URL_BASE.'test/model'),
+			array('name' => 'Globals Test', 'url' => URL_BASE.'test/globals'),
+			array('name' => 'String Helper Test', 'url' => URL_BASE.'test/str'),
+			array('name' => 'Alternator Test', 'url' => URL_BASE.'test/alternator')
 			)));
 		}
 	public function db()
@@ -74,6 +79,47 @@ class controller_test extends controller {
 			}
 		$out .= '</tbody></table>';
 		$this->msg('Model Test',$out);
+		}
+	public function globals()
+		{
+		$msg = '<h3>$_GET</h3><pre>'.print_r($_GET,true).'</pre>';
+		$msg .= '<h3>$_POST</h3><pre>'.print_r($_POST,true).'</pre>';
+		$msg .= '<h3>$_SERVER</h3><pre>'.print_r($_SERVER,true).'</pre>';
+		$this->msg('Globals Test',$msg);
+		}
+	public function str()
+		{
+		$msg = array();
+		
+		$msg['100 Random Alphanumeric Chars'] = str::random(str::alphanumeric,100);
+		$msg['"I love 4 cakes" removed all but non-lowercase-letters'] = str::allow('I love 4 cakes',str::lower);
+		$msg['Does "muffin" begin with "muf"?'] = (str::beginswith('muffin','muf')) ? 'yes' : 'no';
+		$msg['Does "Pie" begin with "p"?'] = (str::beginswith('Pie','p')) ? 'yes' : 'no';
+		
+		$hash = str::hash('secret password',$salt);
+		$msg['Hash of "secret password"'] = $hash;
+		$msg['Salt of "secret password" hash'] = $salt;
+		
+		$encrypted = str::encrypt('muffincake','secret');
+		$msg['"muffincake" encrypted with "secret"'] = $encrypted;
+		$msg['"'.$encrypted.'" decrypted with "secret"'] = str::decrypt($encrypted,'secret');
+		
+		$msgstr = '';
+		foreach ($msg as $title => $out)
+			{
+			$msgstr .= '<h3>'.str::htmlescape($title).'</h3><pre>'.str::htmlescape($out).'</pre>';
+			}
+		$this->msg('String Helper Test',$msgstr);
+		}
+	public function alternator()
+		{
+		$alt = new alternator('#500','#800','#A00');
+		$msg = '';
+		for ($i = 0; $i < 20; $i++)
+			{
+			$msg .= '<div style="background:'.$alt.'">&nbsp;</div>';
+			}
+		$this->msg('Alternator Test',$msg);
 		}
 	public function loremipsum()
 		{
