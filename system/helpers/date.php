@@ -1,6 +1,6 @@
 <?php
-class number extends helper {
-static private $times = array(
+class date extends helper {
+private static $times = array(
 	'second' => 1,
 	'minute' => 60,
 	'hour' => 3600,
@@ -8,7 +8,7 @@ static private $times = array(
 	'week' => 604800,
 	'year' => 31536000
 	);
-	static public function timespan($seconds, $max = 3, $delim = ', ', $sep = ' ', $names = null, $plural = 's')
+	public static function span($seconds, $max = 3, $delim = ', ', $sep = ' ', $names = null, $plural = 's')
 		{
 		if ($names === null) {$names = self::$times;}
 		$out = array();
@@ -25,8 +25,12 @@ static private $times = array(
 		$out = implode($delim, $out);
 		return $out;
 		}
-	static public function format($number, $decimal = 3, $leading_zeroes = 0, $decimal_point = '.', $thousands_sep = ',')
+	public static function __callStatic($method,$args)
 		{
-		
+		$args[0] = (isset($args[0])) ? $args[0] : 1;
+		if (substr($method,-1) == 's' && in_array(substr($method,0,-1),array_keys(self::$times)))
+			{
+			return self::$times[substr($method,0,-1)]*$args[0];
+			}
 		}
 }

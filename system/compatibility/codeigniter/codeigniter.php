@@ -1,4 +1,10 @@
 <?php
+/*
+@airdoc class codeigniter extends helper
+title: Codeigniter helper
+description:
+	provides some basic methods to load CI helpers, plugins, and libraries
+*/
 class codeigniter extends helper {
 	static public function add_helper($helper)
 		{

@@ -1,6 +1,7 @@
 <?php
 class output extends library {
 private $headers = array();
+private $cachetime = 0;
 	public function start()
 		{
 		ob_start();
@@ -8,6 +9,7 @@ private $headers = array();
 		}
 	public function end()
 		{
+		$rawheaders = array('status' => false, 'normal' => array());
 		foreach ($this->headers as $field => $value)
 			{
 			if ($field == 'Status')
@@ -22,15 +24,31 @@ private $headers = array();
 					{
 					$code = (int) substr($value,0,3);
 					}
+				$rawheaders['status'] = array($prefix.' '.$value,$code);
 				header($prefix.' '.$value,true,$code);
 				}
 			else
 				{
+				$rawheaders['normal'][] = $field.': '.$value;
 				header($field.': '.$value,true);
 				}
 			}
+		if ($this->cachetime)
+			{
+			$parts = explode('?',$_SERVER['REQUEST_URI']);
+			$file = DIR_CACHE.'output_'.sha1(array_shift($parts));
+			file_put_contents($file,
+				(time()+$this->cachetime)."\n".
+				json_encode($rawheaders)."\n".
+				ob_get_contents()
+				);
+			}
 		ob_end_flush();
 		return $this;
+		}
+	public function cache($cachetime)
+		{
+		$this->cachetime = $cachetime;
 		}
 	public function header($field,$value = null)
 		{

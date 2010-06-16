@@ -1,3 +1,16 @@
+<?php
+/*
+@airdoc file
+title: Installer
+description:
+	Only accessible when .htaccess or other rewrites are working. Checks for
+	proper folder permissions and php version before allowing
+	username/password submission. Upon submission, writes them to
+	file|system/storage/cp_pwd after first hashing the password. Then it
+	writes the file|system/config/config.php with the proper host info.
+see also: file|install.php
+*/
+?>
 <html>
 <head>
 <title>Install AirPHP</title>

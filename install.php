@@ -1,3 +1,13 @@
+<?php
+/*
+@airdoc file
+title: Pseudo-Installer
+description:
+	only visible when rewrites aren't set up properly, it tells the user to
+	set them up
+see also: file|public/install.php
+*/
+?>
 <html>
 <head>
 <title>Install AirPHP</title>
