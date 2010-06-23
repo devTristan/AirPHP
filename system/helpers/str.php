@@ -88,4 +88,15 @@ private $alternatepos = array();
 		$iv = mcrypt_create_iv(mcrypt_get_iv_size($algorithm, MCRYPT_MODE_ECB), MCRYPT_RAND);
 		return mcrypt_decrypt($algorithm, $key, base64_decode($str), MCRYPT_MODE_ECB, $iv);
 		}
+	public static function contains($haystack, $needle)
+		{
+		return (strpos($haystack, $needle) !== false);
+		}
+	public static function readable($str)
+		{
+		if ($str === null) {return 'NULL';}
+		if ($str === false) {return 'FALSE';}
+		if ($str === true) {return 'TRUE';}
+		return $str;
+		}
 }
