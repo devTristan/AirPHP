@@ -1,12 +1,40 @@
 <?php
+/*
+@airdoc file
+title: CodeIgniter Compatability
+description: Attempts to simulate the CodeIgniter environment
+*/
+
+/*
+@airdoc class CI
+family: compatability
+description: Attempts to replace the CI class accessed by codeignter files
+*/
 class CI {
+/*
+@airdoc public var config
+class: CI
+*/
 public $config;
+	/*
+	@airdoc public method __get
+	class: CI
+	params: [name]
+	returns: a singleton instance of a codeigniter class
+	*/
 	public function __get($name)
 		{
 		return s('CI_'.ucfirst($name));
 		}
 }
+/*
+@airdoc class codeigniter_config
+description: acts as codeigniter's proxy for the actual config
+*/
 class codeigniter_config {
+	/*
+	@airdoc public method item
+	*/
 	public function item($name)
 		{
 		return s('config')->codeigniter[$name];

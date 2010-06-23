@@ -1,7 +1,8 @@
 <?php
 class files extends helper {
-	static public function ls($dir)
+	static public function ls($dir = null)
 		{
+		if ($dir === null) {$dir = getcwd();}
 		$results = array();
 		$handler = opendir($dir);
 		while ($file = readdir($handler))

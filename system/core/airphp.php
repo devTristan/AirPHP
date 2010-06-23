@@ -19,8 +19,8 @@ public $error_levels = array(
 	public function __construct()
 		{
 		$this->define_constants();
-		//set_error_handler(array($this,'error_handler'));
-		//set_exception_handler(array($this,'exception_handler'));
+		set_error_handler(array($this,'error_handler'));
+		set_exception_handler(array($this,'exception_handler'));
 		}
 	public function error_name($level)
 		{
@@ -37,8 +37,14 @@ public $error_levels = array(
 		}
 	public function exception_handler($exception)
 		{
+		$backtrace = $exception->getTrace();
+		unset($backtrace[0]);
 		S('views')->show_view('errors/php',array(
-			'exception' => $exception
+			'severity' => $this->error_name($exception->getSeverity()),
+			'message' => $exception->getMessage(),
+			'file' => substr($exception->getFile(),strlen(DIR_BASE)),
+			'line' => $exception->getLine(),
+			'backtrace' => $backtrace
 			));
 		}
 	private function define_constants()
@@ -67,10 +73,10 @@ public $error_levels = array(
 		define('EXT',substr(__FILE__,strrpos(__FILE__,'.')));
 		
 		//publicdir: the directory of the public folder, where the entry point is
-		$publicdir = substr($_SERVER['SCRIPT_FILENAME'],0,strrpos($_SERVER['SCRIPT_FILENAME'],'/'));
+		//$publicdir = substr($_SERVER['SCRIPT_FILENAME'],0,strrpos($_SERVER['SCRIPT_FILENAME'],'/'));
 		//DIR_BASE: the absolute directory of the base of the framework.
 		//something like /var/www/
-		define('DIR_BASE',substr($publicdir,0,strrpos($publicdir,'/')).'/');
+		define('DIR_BASE',getcwd().'/');
 		
 		//folders: the folders to be put into constants
 		//DIR_APPLICATION should be something like /var/www/application/, and so on
@@ -97,6 +103,8 @@ public $error_levels = array(
 			$constant_name = end(explode('/',$folder));
 			define('DIR_'.strtoupper($constant_name),DIR_BASE.$folder.'/');
 			}
+		
+		if (php_sapi_name() == 'cli') {return;}
 		
 		//URL: everything in REQUEST_URI minus the basedir as defined in the configuration
 		$url = substr($_SERVER['REQUEST_URI'],strlen(s('config')->host['basedir'])+1);

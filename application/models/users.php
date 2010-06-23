@@ -1,5 +1,6 @@
 <?php
 $fields = array(
+	'id' => field::number(4294967295),
 	'username' => field::varchar(128),
 	'password' => field::password(),
 	'name' => field::varchar(128),
@@ -7,6 +8,7 @@ $fields = array(
 	'last_visit' => field::timestamp()
 	);
 $index = array(
+	index::primary('id'),
 	index::unique('username'),
 	index::index('join_date'),
 	index::index('last_visit')
@@ -14,6 +16,7 @@ $index = array(
 $defaults = array(
 	'name' => 'unnamed'
 	);
+$identifier = 'id';
 
 class model_users extends model {
 	public function validate_username($username)
