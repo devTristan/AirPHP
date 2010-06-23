@@ -18,7 +18,10 @@ public $querylist = array();
 			{
 			$method = (($this->config['persistent']) ? 'p' : '').'connect';
 			$this->connection = $this->worker()->$method($this->config);
-			$this->worker()->set_database($this->connection(),$this->config['database']);
+			if ($this->config['database'])
+				{
+				$this->worker()->set_database($this->connection,$this->config['database']);
+				}
 			}
 		return $this->connection;
 		}
@@ -26,8 +29,12 @@ public $querylist = array();
 		{
 		return isset($this->connection);
 		}
-	public function query($sql)
+	public function query($sql, $multi = false)
 		{
+		if ($multi === false && str::contains($sql,';'))
+			{
+			show_error('Individual queries cannot contain colons<h2>SQL Query</h2><pre>'.$sql.'</pre>','db');
+			}
 		$connection = $this->connection();
 		$worker = $this->worker();
 		$start = microtime(true);
@@ -87,6 +94,15 @@ public $querylist = array();
 	public function fetch($result)
 		{
 		return $this->fetch_assoc($result);
+		}
+	public function fetch_all($result)
+		{
+		$rows = array();
+		while ($row = $this->fetch_assoc($result))
+			{
+			$rows[] = $row;
+			}
+		return $rows;
 		}
 	public function __call($method,$args)
 		{
