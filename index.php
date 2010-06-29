@@ -40,11 +40,15 @@ error_reporting(E_ALL);
 //If we are on PHP >= 6.0.0 we do not need some code
 if (!version_compare(PHP_VERSION, '6.0.0-dev', '>='))
 	{
-	@set_magic_quotes_runtime(0);
+	//If magic quotes is on, fix it
+	if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc())
+		{
+		require_once('system/core/fixes/magic_quotes.php');
+		}
 	//If register globals is on, deregister them
 	if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals')) == 'on' || !function_exists('ini_get'))
 		{
-		require_once 'system/core/deregister_globals.php';
+		require_once 'system/core/fixes/register_globals.php';
 		}
 	}
 define('FRAMEWORK_NAME','AirPHP');
