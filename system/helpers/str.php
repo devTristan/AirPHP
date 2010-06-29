@@ -99,4 +99,23 @@ private $alternatepos = array();
 		if ($str === true) {return 'TRUE';}
 		return $str;
 		}
+	public static function cutoff($str, $length)
+		{
+		if (strlen($str) <= $length) {return $str;}
+		$str = substr($str, 0, $length-3).'...';
+		return $str;
+		}
+	public static function urltitle($str)
+		{
+		$str = str_split($str);
+		$allowed = str_split(self::alphanumeric);
+		$newstr = '';
+		foreach ($str as $char)
+			{
+			$newstr .= (in_array($char, $allowed)) ? $char : '-';
+			}
+		$newstr = str_replace('--', '-', $newstr);
+		$newstr = trim($newstr, '-');
+		return $newstr;
+		}
 }
