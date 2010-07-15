@@ -19,8 +19,8 @@ public $error_levels = array(
 	public function __construct()
 		{
 		$this->define_constants();
-		set_error_handler(array($this,'error_handler'));
-		set_exception_handler(array($this,'exception_handler'));
+		//set_error_handler(array($this,'error_handler'));
+		//set_exception_handler(array($this,'exception_handler'));
 		}
 	public function error_name($level)
 		{
@@ -120,5 +120,11 @@ public $error_levels = array(
 		//variable substr_count used so that it doesn't have to be run twice
 		$substr_count = substr_count(URL,'/');
 		define('URL_BASE',($substr_count) ? str_repeat('../',$substr_count) : './');
+		
+		define('URL_FULLBASE',
+			s('config')->host['protocol'].'://'.s('config')->host['domain'].
+			((s('config')->host['port'] == 80) ? '' : ':'.s('config')->host['port']).
+			'/'.s('config')->host['basedir']
+			);
 		}
 }

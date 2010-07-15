@@ -64,7 +64,7 @@ function airphp_autoload($class)
 			break;
 			}
 		}
-	if (!class_exists($class))
+	/*if (!class_exists($class))
 		{
 		$str = '';
 		$str .= "Couldn't find class $class<br/>\n";
@@ -76,6 +76,6 @@ function airphp_autoload($class)
 			}
 		$str .= "</ol>";
 		show_error($str);
-		}
+		}*/
 	}
 spl_autoload_register('airphp_autoload');
