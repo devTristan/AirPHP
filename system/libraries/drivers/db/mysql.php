@@ -74,6 +74,10 @@ public $name = 'MySQL';
 		{
 		return mysql_affected_rows($link);
 		}
+	public function num_rows($link, $result)
+		{
+		return mysql_num_rows($result);
+		}
 	public function disconnect($link)
 		{
 		return mysql_close($link);
@@ -84,11 +88,11 @@ public $name = 'MySQL';
 		}
 	public function fetch_assoc($resource)
 		{
-		return mysql_fetch_assoc($resource);
+		return (is_resource($resource)) ? mysql_fetch_assoc($resource) : false;
 		}
 	public function fetch_enum($resource)
 		{
-		return mysql_fetch_row($resource);
+		return (is_resource($resource)) ? mysql_fetch_row($resource) : false;
 		}
 	public function free_result($resource)
 		{
@@ -282,11 +286,18 @@ public $name = 'MySQL';
 		else if (is_array($fields))
 			{
 			$fieldarr = array();
-			foreach ($fields as $field)
+			foreach ($fields as $field => $alias)
 				{
-				$fieldarr[] = $this->build_fields($link,$field);
+				if (is_numeric($field))
+					{
+					$fieldarr[] = $this->build_fields($link,$alias);
+					}
+				else
+					{
+					$fieldarr[] = $this->build_fields($link,$this->build_fields($link,$field).' as '.$this->escape($link,$alias,'`'));
+					}
 				}
-			$fields = implode(', ',$fieldarr);
+			$fields = implode(", ",$fieldarr);
 			}
 		return $fields;
 		}

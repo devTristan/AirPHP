@@ -118,4 +118,17 @@ private $alternatepos = array();
 		$newstr = trim($newstr, '-');
 		return $newstr;
 		}
+	public function before_last($str, $substr)
+		{
+		return substr($str, 0, strrpos($str, $substr));
+		}
+	//TODO: before_first, after_last, after_first
+	public static function pad_left($string, $length, $pad = ' ')
+		{
+		return str_repeat($pad, max($length-strlen($string), 0)).$string;
+		}
+	public static function pad_right($string, $length, $pad = ' ')
+		{
+		return $string.str_repeat($pad, max($length-strlen($string), 0));
+		}
 }

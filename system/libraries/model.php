@@ -233,7 +233,12 @@ private $model, $result, $previous_state, $data;
 		}
 	public function print_r($echo = false)
 		{
-		return print_r($this->data,$echo);
+		$data = array();
+		foreach ($this->data as $field => $value)
+			{
+			$data[$field] = $this->field($field)->get($value);
+			}
+		return print_r($data,$echo);
 		}
 	public function rewind()
 		{
@@ -265,10 +270,11 @@ private $model, $result, $previous_state, $data;
 		}
 	public function offsetGet($offset)
 		{
-		return $this->data[$offset];
+		return $this->field($offset)->get($this->data[$offset]);
 		}
 	public function offsetSet($offset,$value)
 		{
+		$value = $this->field($offset)->set($value);
 		if ($this->result)
 			{
 			if ($this->previous_state[$offset] == $value)
@@ -300,6 +306,12 @@ private $model, $result, $previous_state, $data;
 					array($this->model->identifier => $this->previous_state[$this->model->identifier]),1);
 				}
 			}
+		}
+	private function field($field)
+		{
+		$field = $this->model->fields[$field][0];
+		require_once(DIR_DRIVERS.'model/fields/'.$field.'.php');
+		return s('field_'.$field);
 		}
 }
 class field {

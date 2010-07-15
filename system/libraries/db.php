@@ -59,6 +59,18 @@ public $querylist = array();
 		{
 		return $this->worker()->unbuffered_query($this->connection,$sql);
 		}
+	public function get($table, $where = null, $order = null, $limit = null)
+		{
+		$sql = $this->build_select(array(
+			'table' => $table,
+			'where' => $where,
+			'order' => $order,
+			'limit' => $limit
+			));
+		$result = $this->query($sql);
+		$rows = $this->fetch_all($result);
+		return $rows;
+		}
 	public function status()
 		{
 		return $this->worker()->status($this->connection());
