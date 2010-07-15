@@ -15,7 +15,7 @@ class download extends helper {
 		{
 		s('output')->cache(0);
 		$ext = strtolower(substr(strrchr($name,'.'),1));
-		$mime = (isset(s('config')->mimes[$ext])) ? s('config')->mimes[$ext] : 'application/octet-stream';
+		$mime = (isset(s('config')->mimes[$ext])) ? s('config')->mimes[$ext] : 'application/force-download';
 		s('output')->header('Content-Type', '"'.$mime.'"');
 		s('output')->header('Content-Disposition', 'attachment; filename="'.$name.'"');
 		s('output')->header('Expires:', '0');
