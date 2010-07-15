@@ -21,7 +21,7 @@ private $rawheaders;
 				ob_get_contents()
 				);
 			}
-		ob_end_flush();
+		@ob_end_flush();
 		return $this;
 		}
 	public function send_headers()
@@ -58,15 +58,18 @@ private $rawheaders;
 		$this->send_headers();
 		flush();
 		ob_flush();
+		return $this;
 		}
 	public function cache($cachetime)
 		{
 		$this->cachetime = $cachetime;
+		return $this;
 		}
 	public function client_cache($cachetime)
 		{
 		$cachetime = (int) $cachetime;
 		$this->header('Cache-Control','public, max-age='.$cachetime);
+		return $this;
 		}
 	public function header($field,$value = null)
 		{
@@ -77,5 +80,10 @@ private $rawheaders;
 			}
 		$this->headers[$field] = $value;
 		return $this;
+		}
+	public function redirect($url, $permanent = false)
+		{
+		if ($permanent) {$this->header(301);}
+		$this->header('Location', $url);
 		}
 }

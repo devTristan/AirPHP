@@ -8,6 +8,23 @@ class parser_pwr extends driver {
 		}
 	public function _callback($element)
 		{
+		if (s('views')->view_exists('pwr/'.$element->tag))
+			{
+			s('views')->element = $element;
+			//ob_start();
+			//s('views')->include_view('pwr/'.$element->tag);
+			$el = array();
+			foreach ($element->attr as $attr => $value)
+				{
+				$el[$attr] = $value;
+				}
+			$el['tag'] = $element->tag;
+			$el['innertext'] = $element->innertext;
+			$el = '(object)'.var_export($el,true);
+			$element->outertext = '<?php s(\'views\')->show_view(\'pwr/'.$element->tag.'\',array(\'element\' => '.$el.')); ?>';
+			//ob_end_clean();
+			return;
+			}
 		if ($this->driver($element->tag))
 			{
 			$this->driver($element->tag)->parse($element);
@@ -15,34 +32,6 @@ class parser_pwr extends driver {
 		}
 	public function html($html)
 		{
-		$parts = explode('<',$html);
-		header('Content-Type: text/plain');
-		foreach ($parts as $id => $part)
-			{
-			if ($id == 0) {continue;}
-			$part = '<'.$part;
-			$tag_area = substr($part,0,strrpos($part,'>')+1);
-			$tag_length = strlen($tag_area);
-			$tag_name = substr($tag_area,1,strpos($tag_area,' ')-1);
-			
-			if (substr($tag_area,-2) == '/>')
-				{
-				$tag_type = 'selfclosing';
-				}
-			elseif (substr($tag_name,0,1) == '/')
-				{
-				$tag_type = 'closing';
-				$tag_name = substr($tag_name,1);
-				}
-			else
-				{
-				$tag_type = 'opening';
-				}
-			$new_tag = '<'.(($tag_type == 'closing') ? '/' : '').$tag_name.(($tag_type == 'selfclosing') ? '/' : '').'>';
-			$parts[$id] = $new_tag.substr($part,$tag_length);
-			}
-		echo "\n\n".implode('',$parts);
-		die();
-		$html = implode('<',$parts);
+		return $this->php($html);
 		}
 }

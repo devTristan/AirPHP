@@ -13,53 +13,61 @@ private $scope = false;
 		unset($data);
 		$this->include_view($file,true);
 		}
-	public function include_view($file,$header = false)
+	public function __set($field, $value)
 		{
-		$folder = substr($file,0,strrpos($file,'/')).'/';
-		$prettyfolder = str_replace('/','-',$folder);
-		if ($folder == '/') {$folder = '';}
-		$files = glob("application/views/$file.*");
-		if (!$files || !isset($files[0]))
+		$this->data[$field] = $value;
+		}
+	public function __get($field)
+		{
+		return $this->data[$field];
+		}
+	public function include_view($___file,$___header = false)
+		{
+		$___folder = substr($___file,0,strrpos($___file,'/')).'/';
+		$___prettyfolder = str_replace('/','-',$___folder);
+		if ($___folder == '/') {$___folder = '';}
+		$___files = glob("application/views/$___file.*");
+		if (!$___files || !isset($___files[0]))
 			{
-			show_error('View not found: '.$file);
+			show_error('View not found: '.$___file);
 			}
-		$file = substr($files[0],strrpos($files[0],'/')+1);
-		$viewfile = DIR_BASE.$files[0];
-		if (count(explode('.',$file)) != 2)
+		$___file = substr($___files[0],strrpos($___files[0],'/')+1);
+		$___viewfile = DIR_BASE.$___files[0];
+		if (count(explode('.',$___file)) != 2)
 			{
-			if (!file_exists(DIR_CACHE.'view_'.$prettyfolder.$file) || filemtime(DIR_CACHE.'view_'.$prettyfolder.$file) <= filemtime($viewfile))
+			if (!file_exists(DIR_CACHE.'view_'.$___prettyfolder.$___file) || filemtime(DIR_CACHE.'view_'.$___prettyfolder.$___file) <= filemtime($___viewfile))
 				{
-				$parsed = s('parser')->parsefile($viewfile);
-				if ($parsed !== false)
+				$___parsed = s('parser')->parsefile($___viewfile);
+				if ($___parsed !== false)
 					{
-					file_put_contents(DIR_CACHE.'view_'.$prettyfolder.$file,$parsed);
-					$parsed = true;
+					file_put_contents(DIR_CACHE.'view_'.$___prettyfolder.$___file,$___parsed);
+					$___parsed = true;
 					}
 				}
 			else
 				{
-				$parsed = true;
+				$___parsed = true;
 				}
 			}
 		else
 			{
-			$parsed = false;
+			$___parsed = false;
 			}
-		foreach ($this->data as $var => $value)
+		foreach ($this->data as $___var => $___value)
 			{
-			$$var = $value;
+			$$___var = $___value;
 			}
-		unset($var);
-		unset($value);
-		if ($header)
+		unset($___var);
+		unset($___value);
+		if ($___header)
 			{
-			$ext = substr($file,strrpos($file,'.')+1);
+			$___ext = substr($___file,strrpos($___file,'.')+1);
 			s('output')->header('Content-Type',
-				(isset(s('config')->mimes[$ext]))
-					? s('config')->mimes[$ext]
+				(isset(s('config')->mimes[$___ext]))
+					? s('config')->mimes[$___ext]
 					: s('config')->mimes['_default']);
 			}
-		unset($header);
-		include((($parsed) ? DIR_CACHE.'view_'.$prettyfolder.$file : $viewfile));
+		unset($___header);
+		include((($___parsed) ? DIR_CACHE.'view_'.$___prettyfolder.$___file : $___viewfile));
 		}
 }
