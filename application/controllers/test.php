@@ -12,7 +12,8 @@ class controller_test extends controller {
 			array('name' => 'Model Test', 'url' => URL_BASE.'test/model'),
 			array('name' => 'Globals Test', 'url' => URL_BASE.'test/globals'),
 			array('name' => 'String Helper Test', 'url' => URL_BASE.'test/str'),
-			array('name' => 'Alternator Test', 'url' => URL_BASE.'test/alternator')
+			array('name' => 'Alternator Test', 'url' => URL_BASE.'test/alternator'),
+			array('name' => 'Download Helper Test', 'url' => URL_BASE.'test/download')
 			)));
 		}
 	public function db()
@@ -71,6 +72,7 @@ class controller_test extends controller {
 		$out .= '<pre>'.$user->print_r(true).'</pre>';
 		$user['join_date'] += 1;
 		$user['last_visit'] += 1;
+		$user['join_ip'] = '127.0.0.1';
 		$user->commit();
 		$out .= '<table><thead><th>Time</th><th>SQL</th></thead><tbody>';
 		foreach (s('db')->querylist as $query)
@@ -124,6 +126,17 @@ class controller_test extends controller {
 	public function loremipsum()
 		{
 		$this->msg('Typography Test',$this->loremipsum->paragraphs(4,'html'));
+		}
+	public function download()
+		{
+		if (isset($_GET['go']))
+			{
+			download::file(__FILE__);
+			}
+		else
+			{
+			$this->msg('Download Helper Test', '<a href="download?go">Download test.php</a>');
+			}
 		}
 	private function msg($title,$message)
 		{
