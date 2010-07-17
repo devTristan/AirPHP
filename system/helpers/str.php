@@ -122,7 +122,18 @@ private $alternatepos = array();
 		{
 		return substr($str, 0, strrpos($str, $substr));
 		}
-	//TODO: before_first, after_last, after_first
+	public function before_first($str, $substr)
+		{
+		return substr($str, 0, strpos($str, $substr));
+		}
+	public function after_last($str, $substr)
+		{
+		return substr($str, strrpos($str, $substr)+1);
+		}
+	public function after_first($str, $substr)
+		{
+		return substr($str, strpos($str, $substr)+1);
+		}
 	public static function pad_left($string, $length, $pad = ' ')
 		{
 		return str_repeat($pad, max($length-strlen($string), 0)).$string;
