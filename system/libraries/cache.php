@@ -29,6 +29,7 @@ private $prefix;
 			}
 		return false;
 		}
+	public function get($item) { return $this->__get($item); }
 	public function __set($item,$value)
 		{
 		$this->set($item,$value);
