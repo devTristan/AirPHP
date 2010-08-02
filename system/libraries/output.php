@@ -1,6 +1,7 @@
 <?php
 class output extends library {
 private $headers = array();
+private $cookies = array();
 private $cachetime = 0;
 private $rawheaders;
 	public function start()
@@ -51,6 +52,11 @@ private $rawheaders;
 				}
 			}
 		$this->headers = array();
+		foreach ($this->cookies as $cookie)
+			{
+			call_user_func_array('setcookie', $cookie);
+			}
+		$this->cookies = array();
 		return $this;
 		}
 	public function flush()
@@ -80,6 +86,16 @@ private $rawheaders;
 			}
 		$this->headers[$field] = $value;
 		return $this;
+		}
+	public function set_cookie($item, $value, $timeout = null, $path = null, $domain = null, $secure = null, $httponly = null)
+		{
+		if ($timeout === null) {$timeout = s('config')->cookies->default_timeout;}
+		if ($path === null) {$path = s('config')->cookies->path;}
+		if ($domain === null) {$domain = s('config')->cookies->domain;}
+		if ($secure === null) {$secure = s('config')->cookies->secure;}
+		if ($httponly === null) {$httponly = s('config')->cookies->httponly;}
+		$item = s('config')->cookies->prefix.$item;
+		$this->cookies[$item] = array($item, $value, $timeout, $path, $domain, $secure, $httponly);
 		}
 	public function redirect($url, $permanent = false)
 		{

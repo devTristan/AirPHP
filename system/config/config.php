@@ -19,12 +19,6 @@ $config = array(
 'permitted_uri_chars' => 'a-z 0-9~%.:_\-',
 'url_suffix' => '',
 
-'cookies' => array(
-	'prefix' => '',
-	'domain' => 'localhost',
-	'path' => '/'
-	),
-
 'autoload_folders' => array(),
 
 'classtypes' => array(

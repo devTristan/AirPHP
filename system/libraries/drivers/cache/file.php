@@ -1,11 +1,7 @@
 <?php
 require_once(DIR_DRIVERS.'cache/flatfile.php');
 class cache_file extends cache_flatfile {
-	public function __construct()
-		{
-		$this->prefix = 'cache_';
-		parent::__construct();
-		}
+protected $prefix = 'cache_';
 	public function get($item)
 		{
 		$data = parent::get($item);
