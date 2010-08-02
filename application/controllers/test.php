@@ -13,7 +13,8 @@ class controller_test extends controller {
 			array('name' => 'Globals Test', 'url' => URL_BASE.'test/globals'),
 			array('name' => 'String Helper Test', 'url' => URL_BASE.'test/str'),
 			array('name' => 'Alternator Test', 'url' => URL_BASE.'test/alternator'),
-			array('name' => 'Download Helper Test', 'url' => URL_BASE.'test/download')
+			array('name' => 'Download Helper Test', 'url' => URL_BASE.'test/download'),
+			array('name' => 'Session Test', 'url' => URL_BASE.'test/session')
 			)));
 		}
 	public function db()
@@ -137,6 +138,15 @@ class controller_test extends controller {
 			{
 			$this->msg('Download Helper Test', '<a href="download?go">Download test.php</a>');
 			}
+		}
+	public function session()
+		{
+		if (!isset($this->session['views']))
+			{
+			$this->session['views'] = 0;
+			}
+		$this->session['views'] += 1;
+		$this->msg('Session Test', '<pre>'.$this->session->print_r(true).'</pre>');
 		}
 	private function msg($title,$message)
 		{
