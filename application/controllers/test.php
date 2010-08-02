@@ -14,7 +14,8 @@ class controller_test extends controller {
 			array('name' => 'String Helper Test', 'url' => URL_BASE.'test/str'),
 			array('name' => 'Alternator Test', 'url' => URL_BASE.'test/alternator'),
 			array('name' => 'Download Helper Test', 'url' => URL_BASE.'test/download'),
-			array('name' => 'Session Test', 'url' => URL_BASE.'test/session')
+			array('name' => 'Session Test', 'url' => URL_BASE.'test/session'),
+			array('name' => 'Language Test', 'url' => URL_BASE.'test/language')
 			)));
 		}
 	public function db()
