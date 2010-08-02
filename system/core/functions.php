@@ -11,7 +11,6 @@ function n($class) //stands for new
 
 function show_error($message = '',$type = 'general')
 	{
-	print_r(debug_backtrace());
 	if ($type == 'general')
 		{
 		if ($message == '')
