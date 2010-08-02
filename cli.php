@@ -27,3 +27,4 @@ unset($class);
 s('event')->trigger('initialize');
 
 chdir($old_dir);
+unset($old_dir);
