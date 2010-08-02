@@ -94,7 +94,8 @@ public $error_levels = array(
 			'application/controllers',
 			'application/models',
 			'application/views',
-			'application/errors',
+			'application/views/errors',
+			'application/language',
 			'public'
 			);
 		

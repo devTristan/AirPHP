@@ -148,6 +148,12 @@ class controller_test extends controller {
 		$this->session['views'] += 1;
 		$this->msg('Session Test', '<pre>'.$this->session->print_r(true).'</pre>');
 		}
+	public function language()
+		{
+		$msg = '<p>'.$this->lang->helloworld->hello.'</p>';
+		$msg .= '<p>'.$this->lang->helloworld->cakes(40).'</p>';
+		$this->msg('Language Test', $msg);
+		}
 	private function msg($title,$message)
 		{
 		s('views')->show_view('errors/general',array(
