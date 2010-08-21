@@ -1,6 +1,6 @@
 <?php
 class field_char extends basefield {
-	public function length($args)
+	public function args($args)
 		{
 		return $args[0];
 		}

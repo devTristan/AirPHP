@@ -49,7 +49,7 @@ private $request;
 		switch (count($args))
 			{
 			case 0: return $this->$field;
-			case 1: $method = $args[0]; return $this->$method($field);
+			case 1: return isset($this->$field) ? $this->$field : $args[0];
 			case 2: $method = $args[0]; return $this->$method($field) || $args[1];
 			default: return null;
 			}

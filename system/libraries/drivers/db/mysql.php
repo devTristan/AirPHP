@@ -98,6 +98,12 @@ public $name = 'MySQL';
 		{
 		return mysql_free_result($resource);
 		}
+	public function last_insert_id($link)
+		{
+		$result = $this->query($link, 'SELECT LAST_INSERT_ID()');
+		$row = $this->fetch_enum($result);
+		return $row[0];
+		}
 	public function error($link)
 		{
 		$error = mysql_error($link);
@@ -137,11 +143,11 @@ public $name = 'MySQL';
 		$lines = array();
 		foreach ($args['rows'] as $row)
 			{
-			$lines[] = $this->build_row($link,$row);
+			$lines[] = $this->build_row($link, $row);
 			}
 		foreach ($args['index'] as $index)
 			{
-			$lines[] = $this->build_index($link,$index);
+			$lines[] = $this->build_index($link, $index);
 			}
 		$lines = implode(",\n",$lines);
 		$sql[] = $lines;
@@ -155,15 +161,28 @@ public $name = 'MySQL';
 		$args = n('arr',$args)->addkeys(array(
 			'name' => null,
 			'type' => null,
-			'length' => null,
+			'args' => '',
 			'null' => null,
 			'unsigned' => null,
 			'auto_increment' => null
-			));
+			))->toArray();
 		$sql = array();
-		$sql[] = '`'.$args['name'].'` '.strtoupper($args['type']).'('.(($args['length']) ? $args['length'] : '').')';
+		if ($args['args'])
+			{
+			if (!is_array($args['args']))
+				{
+				$args['args'] = array($args['args']);
+				}
+			foreach ($args['args'] as $arg_id => $arg)
+				{
+				$args['args'][$arg_id] = $this->escape($link, $arg, '"');
+				}
+			$args['args'] = '('.implode(', ', $args['args']).')';
+			}
+		$sql[] = '`'.$args['name'].'` '.strtoupper($args['type']).$args['args'];
 		if ($args['unsigned']) {$sql[] = 'UNSIGNED';}
 		$sql[] = ($args['null']) ? 'NULL' : 'NOT NULL';
+		if (isset($args['default'])) {$sql[] = 'DEFAULT '.$this->escape($link, $args['default'], '"');}
 		if ($args['auto_increment']) {$sql[] = 'AUTO_INCREMENT';}
 		$sql = implode(' ',$sql);
 		return $sql;
@@ -246,6 +265,46 @@ public $name = 'MySQL';
 		$sql = implode(" \n",$sql);
 		return $sql;
 		}
+	public function build_insert($link, $args)
+		{
+		$args = n('arr',$args)->addkeys(array(
+			'db' => null,
+			'table' => null,
+			'data' => null,
+			'options' => null
+			));
+		if (!$args['data']) {return;}
+		$sql = array();
+		$firstline = 'INSERT ';
+		if ($args['options']) {$firstline .= implode(' ', array_map($args['options'],'strtoupper')).' ';}
+		$firstline .= 'INTO '.$this->build_table($link, $args['db'], $args['table']);
+		$sql[] = $firstline;
+		
+		$keys = array_keys(isset($args['data'][0]) ? $args['data'][0] : $args['data']);
+		$sql[] = '(' . $this->build_fields($link, $keys) . ')';
+		$sql[] = 'VALUES';
+		
+		if (!isset($args['data'][0]))
+			{
+			$data = array($args['data']);
+			}
+		$rows = array();
+		foreach ($data as $row)
+			{
+			$row = array_values($row);
+			foreach ($row as &$value)
+				{
+				$value = $this->escape($link, $value, '"');
+				}
+			$rows[] = '(' . implode(', ', $row) . ')';
+			}
+		$rows = implode(", \n", $rows);
+		
+		$sql[] = $rows;
+		
+		$sql = implode(" \n",$sql);
+		return $sql;
+		}
 	public function build_set($link,$set,$value = null)
 		{
 		if (func_num_args() == 3 && is_string($set))
@@ -270,7 +329,7 @@ public $name = 'MySQL';
 			}
 		return $set;
 		}
-	public function build_fields($link,$fields)
+	public function build_fields($link, $fields)
 		{
 		if (is_string($fields))
 			{

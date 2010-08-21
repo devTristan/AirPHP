@@ -7,6 +7,7 @@ private $rawheaders;
 	public function start()
 		{
 		ob_start();
+		$this->hook('shutdown', 'end');
 		return $this;
 		}
 	public function end()

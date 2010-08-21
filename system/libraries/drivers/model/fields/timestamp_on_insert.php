@@ -1,10 +1,10 @@
 <?php
 class field_timestamp_on_insert extends basefield {
-	public function type($type,$args)
+	public function type($args)
 		{
 		return 'int';
 		}
-	public function length($args)
+	public function args($args)
 		{
 		return 10;
 		}
@@ -12,8 +12,12 @@ class field_timestamp_on_insert extends basefield {
 		{
 		return true;
 		}
-	public function insert($vars)
+	public function insert($args, $vars)
 		{
 		return time();
+		}
+	public function format($value, $field, $args)
+		{
+		return date($args[0], $value);
 		}
 }

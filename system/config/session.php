@@ -4,6 +4,6 @@ $config = array(
 
 'drivers' => array('memcached'),
 'sid' => 's',
-'timeout' => date::days(7)
+'timeout' => date::days(14)
 
 );

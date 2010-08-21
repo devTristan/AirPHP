@@ -37,7 +37,7 @@ private $vars = array();
 	public function trigger($event,$params = array())
 		{
 		s('timing')->play('[event] '.$event);
-		$params = array_merge($this->vars,$params);
+		//$params = array_merge($this->vars,$params);
 		if (isset($this->events[$event]))
 			{
 			foreach ($this->events[$event] as $data)

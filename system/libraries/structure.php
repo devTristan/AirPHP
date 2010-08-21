@@ -33,16 +33,20 @@ private $_array;
 		{
 		return isset($this->_array[$offset]);
 		}
+	public function __isset($offset) {return $this->offsetExists($offset);}
 	public function offsetGet($offset)
 		{
 		return $this->_array[$offset];
 		}
+	public function __get($offset) {return $this->offsetGet($offset);}
 	public function offsetSet($offset,$value)
 		{
 		$this->_array[$offset] = $value;
 		}
+	public function __set($offset, $value) {return $this->offsetSet($offset, $value);}
 	public function offsetUnset($offset)
 		{
 		unset($this->_array[$offset]);
 		}
+	public function __unset($offset) {return $this->offsetUnset($offset);}
 }

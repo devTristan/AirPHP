@@ -85,18 +85,21 @@ $method = s('router')->fetch_method();
 airphp_autoload('controller_'.$class);
 
 s('output')->start()->header('Content-Type','text/html');
-s('timing')->play('[controller] '.$class.'/'.$method);
 if (method_exists(s('controller_'.$class), '_remap'))
 	{
+	s('timing')->play('[controller] '.$class.'/'.$method);
 	s($class)->_remap($method);
+	s('timing')->pause('[controller] '.$class.'/'.$method);
 	}
 else
 	{
-	if (!in_array($method, get_class_methods(s('controller_'.$class))))
+	if (!in_array($method, get_class_methods(s('controller_'.$class))) || str::beginswith($method, '_'))
 		{
 		show_404($class.'/'.$method);
 		}
-	call_user_func_array(array(s('controller_'.$class), $method), array_slice(s('uri')->rsegments, 2));
+	s('event')->trigger('controller_before');
+	s('timing')->play('[controller] '.$class.'/'.$method);
+	$data = call_user_func_array(array(s('controller_'.$class), $method), array_slice(s('uri')->rsegments, 2));
+	s('timing')->pause('[controller] '.$class.'/'.$method);
+	s('event')->trigger('controller_after', $data);
 	}
-s('timing')->pause('[controller] '.$class.'/'.$method);
-s('output')->end();

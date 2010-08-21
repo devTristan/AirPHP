@@ -10,6 +10,9 @@ public $sid;
 		{
 		$this->set_array($this->data);
 		$this->config = s('config')->session;
+		
+		$drivers = $this->config->drivers;
+		array_unshift($drivers, 'array');
 		$this->storage = s('cache', 'session', $this->config->drivers);
 		
 		if (isset( s('input')->cookie[$this->config->sid] ))

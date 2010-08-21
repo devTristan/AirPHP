@@ -40,10 +40,7 @@ private $prefix;
 		$item = sha1($item);
 		foreach ($this->drivers as $driver)
 			{
-			if (!$this->driver($driver)->set($item,$value,$time))
-				{
-				break;
-				}
+			$this->driver($driver)->set($item,$value,$time);
 			}
 		}
 	public function __isset($item)

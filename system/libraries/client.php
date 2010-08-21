@@ -1,11 +1,7 @@
 <?php
-class client extends library {
-	public function __get($field)
+class client extends obj_client {
+	public function __construct()
 		{
-		$this->$field = $this->$field();
-		}
-	private function ip()
-		{
-		return $_SERVER['REMOTE_ADDR'];
+		parent::__construct($_SERVER['HTTP_USER_AGENT'], $_SERVER['REMOTE_ADDR']);
 		}
 }

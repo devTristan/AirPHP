@@ -62,12 +62,14 @@ private $levels = array(
 				@mkdir($path,0770);
 				}
 			}
-		file_put_contents(DIR_LOGS.$file,$msg,FILE_APPEND);
+		$flags = (file_exists(DIR_LOGS.$file)) ? FILE_APPEND : 0;
+		file_put_contents(DIR_LOGS.$file,$msg,$flags);
+		echo $msg;
 		return $this;
 		}
 	public function error($str = null, $file = null, $line = null, $type = 'error')
 		{
-		$message = $type;
+		$message = '';
 		if ($file !== null)
 			{
 			if ($line !== null)
@@ -78,10 +80,10 @@ private $levels = array(
 				{
 				$message .= ' in file '.$file;
 				}
+			$message .= ': ';
 			}
-		$message .= ': ';
 		$message .= ($str !== null) ? $str : 'Unspecified';
-		$this->log($message,'system',$this->error_ids[$type]);
+		$this->log($message,'system',$type);
 		return $this;
 		}
 	public function fatal_error($str = null, $file = null, $line = null)

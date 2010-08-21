@@ -1,8 +1,7 @@
 <?php
 $config = array(
 
-'default_controller' => 'welcome',
-'airphp.css' => 'welcome/css',
+'default_controller' => 'photoapp',
 'scaffolding_trigger' => ''
 
 );

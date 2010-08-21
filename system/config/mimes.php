@@ -2,6 +2,8 @@
 $config = array(
 '_default' => 'text/html',
 '_default_file' => 'application/octet-stream',
+'json' => 'application/json',
+'yaml' => 'text/plain',
 'hqx' => 'application/mac-binhex40',
 'cpt' => 'application/mac-compactpro',
 'csv' => 'text/x-comma-separated-values',

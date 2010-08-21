@@ -56,6 +56,10 @@ private $data;
 		{
 		return $this->data[$field];
 		}
+	public function toArray()
+		{
+		return $this->data;
+		}
 	public function print_r($return = false)
 		{
 		if ($return)

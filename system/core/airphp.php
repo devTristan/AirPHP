@@ -105,6 +105,8 @@ public $error_levels = array(
 			define('DIR_'.strtoupper($constant_name),DIR_BASE.$folder.'/');
 			}
 		
+		define('DIR_PUBLIC_STORAGE', DIR_PUBLIC.'storage/');
+		
 		if (php_sapi_name() == 'cli') {return;}
 		
 		//URL: everything in REQUEST_URI minus the basedir as defined in the configuration
@@ -113,7 +115,8 @@ public $error_levels = array(
 			{
 			$url = substr($url,0,strpos($url,'?'));
 			}
-		define('URL',$url);
+		define('URL', $url);
+		define('URL_FULL', $_SERVER['REQUEST_URI']);
 		
 		//URL_BASE: the relative path to the base directory for use in views
 		//If the URL is "cake", URL_BASE will be "./". If the URL is "cake/14", URL_BASE will be ../
@@ -127,5 +130,7 @@ public $error_levels = array(
 			((s('config')->host['port'] == 80) ? '' : ':'.s('config')->host['port']).
 			'/'.s('config')->host['basedir']
 			);
+		
+		define('URL_PUBLIC_STORAGE', URL_FULLBASE.'storage/');
 		}
 }

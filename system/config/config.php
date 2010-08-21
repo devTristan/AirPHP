@@ -11,7 +11,7 @@ $config = array(
 	'domain' => 'localhost',
 	'port' => 80,
 	'protocol' => 'http',
-	'basedir' => 'AirPHP/'
+	'basedir' => 'photoapp/'
 	),
 
 'hash_salt' => '803fee1220904b10ba20f5fdfbf7c4553d21d857',
@@ -31,7 +31,11 @@ $config = array(
 	'controller' => array(
 		'prefix' => 'controller_',
 		'autoload_folders' => array('application/controllers')
-		)
+		),
+	'object' => array(
+		'prefix' => 'obj_',
+		'autoload_folders' => array('system/objects')
+		),
 	),
 
 'class_locations' => array(

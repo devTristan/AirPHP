@@ -4,12 +4,16 @@ class field_password extends basefield {
 		{
 		return sha1($value);
 		}
-	public function length($args)
+	public function args($args)
 		{
 		return 40;
 		}
-	public function type($type,$args)
+	public function type($args)
 		{
 		return 'char';
+		}
+	public function format($value, $field, $args)
+		{
+		return ($value == sha1($args[0]));
 		}
 }

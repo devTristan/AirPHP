@@ -8,11 +8,11 @@ class field_ip extends basefield {
 		{
 		return ip::from_int($value);
 		}
-	public function length($args)
+	public function args($args)
 		{
 		return 10;
 		}
-	public function type($type,$args)
+	public function type($args)
 		{
 		return 'int';
 		}
