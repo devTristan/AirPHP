@@ -1,5 +1,5 @@
 <?php
-class field_has_many {
+class field_has_many extends basefield {
 	public function get($value, $args)
 		{
 		$model_name = $args[0];
