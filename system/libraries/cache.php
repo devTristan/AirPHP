@@ -2,6 +2,7 @@
 class cache extends library implements ArrayAccess {
 private $drivers = array();
 private $prefix;
+private static $methodcache = array();
 	public function __construct($dummy1,$dummy2)
 		{
 		$args = func_get_args();
@@ -93,6 +94,43 @@ private $prefix;
 		else
 			{
 			$this->driver($type)->clear();
+			}
+		}
+	public static function method($return_value = null)
+		{
+		$backtrace = debug_backtrace();
+		$key = serialize( array($backtrace[1]['class'], $backtrace[1]['function'], $backtrace[1]['args']) );
+		
+		if (!isset( self::$methodcache[$key] ))
+			{
+			//step one - isset
+			$args = func_get_args();
+			if ( is_int($args[count($args)-1]) )
+				{
+				$timeout = array_pop($args);
+				}
+			else
+				{
+				$timeout = -1;
+				}
+			self::$methodcache[$key] = array($args ,$timeout);
+			$store = s('cache', 'methodcache', self::$methodcache[$key][0]);
+			return isset( $store->$key );
+			}
+		else
+			{
+			$store = s('cache', 'methodcache', self::$methodcache[$key][0]);
+			if (!func_num_args())
+				{
+				//step two - get
+				return $store->$key;
+				}
+			else
+				{
+				//step three - set
+				$store->set($key, $return_value, self::$methodcache[$key][1]);
+				unset(self::$methodcache[$key]);
+				}
 			}
 		}
 }
