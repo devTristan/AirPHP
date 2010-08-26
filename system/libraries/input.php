@@ -50,7 +50,7 @@ private $request;
 			{
 			case 0: return $this->$field;
 			case 1: return isset($this->$field) ? $this->$field : $args[0];
-			case 2: $method = $args[0]; return $this->$method($field) || $args[1];
+			case 2: $method = 'get_'.$args[0]; return isset($this->$field) ? $this->$method($field) : $args[1];
 			default: return null;
 			}
 		}
@@ -62,23 +62,27 @@ private $request;
 		{
 		unset($this->request[$field]);
 		}
-	public function int($field)
+	public function get_int($field)
 		{
 		return (int) $this->$field;
 		}
-	public function bool($field)
+	public function get_bool($field)
 		{
 		return (bool) $this->$field;
 		}
-	public function num($field)
+	public function get_num($field)
+		{
+		return $this->float($field);
+		}
+	public function get_float($field)
 		{
 		return (float) $this->$field;
 		}
-	public function string($field)
+	public function get_string($field)
 		{
 		return (string) $this->$field;
 		}
-	public function getarray($field)
+	public function get_array($field)
 		{
 		return (array) $this->$field;
 		}
