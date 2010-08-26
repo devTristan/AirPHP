@@ -16,7 +16,7 @@ $config = array(
 
 'hash_salt' => '803fee1220904b10ba20f5fdfbf7c4553d21d857',
 
-'permitted_uri_chars' => 'a-z 0-9~%.:_\-',
+'permitted_uri_chars' => '',
 'url_suffix' => '',
 
 'autoload_folders' => array(),
