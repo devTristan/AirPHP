@@ -1,6 +1,10 @@
 <?php
-abstract class structure extends library implements Iterator, Countable, ArrayAccess {
+class structure extends library implements Iterator, Countable, ArrayAccess {
 private $_array;
+	public function __construct($array)
+		{
+		$this->set_array($array);
+		}
 	protected function set_array(&$array)
 		{
 		$this->_array = &$array;
@@ -49,4 +53,8 @@ private $_array;
 		unset($this->_array[$offset]);
 		}
 	public function __unset($offset) {return $this->offsetUnset($offset);}
+	public function _get_data()
+		{
+		return $this->_array;
+		}
 }
