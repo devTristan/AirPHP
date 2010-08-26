@@ -2,7 +2,7 @@
 class field_has_one {
 	public function set($value)
 		{
-		return $value[$value->model->identifier];
+		return is_object($value) ? $value[$value->model->identifier] : $value;
 		}
 	public function get($value, $args)
 		{
