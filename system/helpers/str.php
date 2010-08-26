@@ -10,6 +10,8 @@ const lower = 'abcdefghijklmnopqrstuvwxyz';
 const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const symbols = '~`!@#$%^&*()-_=+,.<>/?;:[]{}\|\'"';
 const spacing = " \t\n";
+const space = ' ';
+const linebreak = "\r\n";
 private $alternatepos = array();
 	static public function allow($str,$dummy)
 		{
